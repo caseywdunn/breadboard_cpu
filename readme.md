@@ -16,6 +16,46 @@ A few things I came across in my build:
   than use an arduino
 
 
+## Control logic
+
+I modified the control logic to free up some pins by using a 74LS138 to
+demultiplex some commands that would never be used at the same time. This includes
+the OUT commands, which could damage the computer if they were activated simultaneously,
+as well as HALT.
+
+| Chip  | IO | Original | Modified |
+| ----- | -- | -------- | -------- |
+| LEFT  |  0 | AO       |   AI         |
+| LEFT  |  1 | AI       |   BI         |
+| LEFT  |  2 | II       |   II         |
+| LEFT  |  3 | IO       |   RI         |
+| LEFT  |  4 | RO       |   MI         |
+| LEFT  |  5 | RI       |   OI         |
+| LEFT  |  6 | MI       |   None       |
+| LEFT  |  7 | HLT      |   None       |
+| RIGHT |  0 |          |   74LS138-A  |
+| RIGHT |  1 | J        |   74LS138-B  |
+| RIGHT |  2 | CO       |   74LS138-C  |
+| RIGHT |  3 | CE       |   J        |
+| RIGHT |  4 | OI       |   CE       |
+| RIGHT |  5 | BI       |   SU       |
+| RIGHT |  6 | SU       |   None     |
+| RIGHT |  7 | EO       |   None     |
+
+
+74LS138
+
+| Index | Control |
+| ----- | ------- |
+| 0     | None    |
+| 1     | HLT     |
+| 2     | AO      |
+| 3     | IO      |
+| 4     | RO      |
+| 5     | CO      |
+| 6     | EO      |
+| 7     | BO    |
+
 ## Executing the code
 
 ### Single digit display
@@ -29,3 +69,7 @@ This writes the code needed for the demo at 6:29 in https://www.youtube.com/watc
 
 
 ### Multiplex digit display
+
+    python makerom_multi_display.py
+    hexdump -C rom_multi_display.bin
+    minipro -p CAT28C16A -w rom_multi_display.bin
