@@ -74,3 +74,15 @@ This writes the code needed for the demo at 6:29 in https://www.youtube.com/watc
     python makerom_multi_display.py
     hexdump -C rom_multi_display.bin
     minipro -p CAT28C16A -w rom_multi_display.bin
+
+### Control logic, no flags
+
+python makerom_control_original_no_flags.py
+hexdump -C rom_control_original_no_flags.bin
+minipro -p CAT28C16A -w rom_control_original_no_flags.bin
+
+### Control logic, flags
+
+python makerom_control_original.py
+hexdump -C rom_control_origina.bin
+minipro -p CAT28C16A -w rom_control_original.bin
