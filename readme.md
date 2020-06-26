@@ -10,7 +10,8 @@ My build of Ben Eater's 8 bit breadboard computer. More on that project at:
 A few things I came across in my build:
 
 - The 220 ohm resistors on LEDs are required, or the LEDs pull the line voltage below what is recognized as a high.
-- The pulldown resistors on the bus needed to be 4.7k rather than 10k.
+- The pulldown resistors on the bus needed to be 4.7k rather than 10k
+- The memory address register would spontaneously clear when numbers with a large number of highs, including in particular D2 and D3, was on the bus. After a bunch of poking around I determinded that there was instability on the CLR line. Addint a 10nF capacitor to stiffen it patched the problem. Don't know if it was stray capacitance, a bum chip, or something else.
 - The 4 bit dip-switch needed leads soldered on to fit in the breadboard
 - I generate the EEPROM binaries with python and write them with an EEPROM programmer rather
   than use an arduino
