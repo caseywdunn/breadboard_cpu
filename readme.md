@@ -11,10 +11,16 @@ A few things I came across in my build:
 
 - The 220 ohm resistors on LEDs are required, or the LEDs pull the line voltage below what is recognized as a high.
 - The pulldown resistors on the bus needed to be 4.7k rather than 10k
-- The memory address register would spontaneously clear when numbers with a large number of highs, including in particular D2 and D3, was on the bus. After a bunch of poking around I determinded that there was instability on the CLR line. Addint a 10nF capacitor to stiffen it patched the problem. Don't know if it was stray capacitance, a bum chip, or something else.
+- The memory address register would spontaneously clear when numbers with a large number of highs, including in particular D2 and D3, was on the bus. After a bunch of poking around I determined that there was instability on the CLR line. Don't know if it was stray capacitance, a bum chip, or something else. I fixed it by using a 74LS08, with one leg of each gate held high to configure it as a buffer, to separately drive each board CLR is connected to. This successfully isolated noise on the CLR line.
+- Subtracting one sometimes makes big jumps. Adding a 100nF capacitor on the SU line at the ALU greatly reduced but did not entirely stop the problem
 - The 4 bit dip-switch needed leads soldered on to fit in the breadboard
 - I generate the EEPROM binaries with python and write them with an EEPROM programmer rather
   than use an arduino
+
+
+## Programs
+
+Some programs that run on the CPU are in the `programs/` directory
 
 
 ## Control logic
@@ -57,32 +63,24 @@ as well as HALT.
 | 6     | EO      |
 | 7     | BO    |
 
-## Executing the code
+## Writing EEPROMs
 
-### Single digit display
-
-This writes the code needed for the demo at 6:29 in https://www.youtube.com/watch?v=dLh1n2dErzE
+Code for writing EEPROM binaries, and the binaries themselves, are in the
+`eeproms/` directory. The general approach to using them is:
 
     python makerom_single_display.py
     hexdump -C rom_single_display.bin
     minipro -p CAT28C16A -w rom_single_display.bin
 
+The EEPROM files are:
 
+- `rom_single_display.bin` is for the demo at 6:29 in
+https://www.youtube.com/watch?v=dLh1n2dErzE
 
-### Multiplex digit display
+- `rom_multi_display.bin` is for the final display driver
 
-    python makerom_multi_display.py
-    hexdump -C rom_multi_display.bin
-    minipro -p CAT28C16A -w rom_multi_display.bin
+- `rom_control_original_no_flags.bin` is for the incremental demo without
+control logic
 
-### Control logic, no flags
-
-python makerom_control_original_no_flags.py
-hexdump -C rom_control_original_no_flags.bin
-minipro -p CAT28C16A -w rom_control_original_no_flags.bin
-
-### Control logic, flags
-
-python makerom_control_original.py
-hexdump -C rom_control_origina.bin
-minipro -p CAT28C16A -w rom_control_original.bin
+- `rom_control_original.bin` is the final control logic of the Ben Eater video
+series

@@ -29,7 +29,7 @@ def upper_byte (x):
 v_lower_byte = np.vectorize(lower_byte)
 v_upper_byte = np.vectorize(upper_byte)
 
-
+   
 code = bytearray( [0x00] * rom_bytes )
 
 
@@ -71,7 +71,7 @@ UCODE_TEMPLATE = np.array([
   [ MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 ],   # 1001
   [ MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 ],   # 1010
   [ MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 ],   # 1011
-  [ MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 ],   # 1100
+  [ MI|CO,  RO|II|CE,  0,       0,      0,           0, 0, 0 ],   # 1100
   [ MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 ],   # 1101
   [ MI|CO,  RO|II|CE,  AO|OI,  0,      0,           0, 0, 0 ],   # 1110 - OUT
   [ MI|CO,  RO|II|CE,  HLT,    0,      0,           0, 0, 0 ],   # 1111 - HLT
@@ -109,7 +109,7 @@ lower = bytearray(v_lower_byte(chunk).flatten().tolist())
 code[512:640] = upper
 code[640:768] = lower
 
-# ZF = 1, CF = 1
+#  ZF = 1, CF = 1
 chunk = UCODE_TEMPLATE
 chunk[7,2] =  IO|J
 chunk[8,2] =  IO|J
