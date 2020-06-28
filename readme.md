@@ -38,19 +38,19 @@ as well as HALT.
 | LEFT  |  3 | IO       |   RI         |
 | LEFT  |  4 | RO       |   MI         |
 | LEFT  |  5 | RI       |   OI         |
-| LEFT  |  6 | MI       |   None       |
+| LEFT  |  6 | MI       |   FI         |
 | LEFT  |  7 | HLT      |   None       |
-| RIGHT |  0 |          |   74LS138-A  |
+| RIGHT |  0 | FI       |   74LS138-A  |
 | RIGHT |  1 | J        |   74LS138-B  |
 | RIGHT |  2 | CO       |   74LS138-C  |
 | RIGHT |  3 | CE       |   J        |
 | RIGHT |  4 | OI       |   CE       |
-| RIGHT |  5 | BI       |   SU       |
+| RIGHT |  5 | BI       |   SU        |
 | RIGHT |  6 | SU       |   None     |
 | RIGHT |  7 | EO       |   None     |
 
 
-74LS138
+74LS138 for modified control logic
 
 | Index | Control |
 | ----- | ------- |
