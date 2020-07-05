@@ -31,32 +31,38 @@ v_upper_byte = np.vectorize(upper_byte)
 
 
 code = bytearray( [0x00] * rom_bytes )
+# Chip  LLLLLLLLRRRRRRRR
+# D     7654321076543210
+
+# Left EEPROM
+#   = 0b1000000000000000  # Unassigned
+FI  = 0b0100000000000000  # Flags in
+OI  = 0b0010000000000000  # Output register in
+MI  = 0b0001000000000000  # Memory address register in
+RI  = 0b0000100000000000  # RAM data in
+II  = 0b0000010000000000  # Instruction register in
+BI  = 0b0000001000000000  # B register in
+AI  = 0b0000000100000000  # A register in
+
+# Right EEPROM
+
+# Right EEPROM
+#   = 0b1000000010000000  # Unassigned
+#   = 0b1000000001000000  # Unassigned
+SU  = 0b0000000000100000  # ALU subtract
+CE  = 0b0000000000010000  # Program counter enable
+J   = 0b0000000000001000  # Jump (program counter in)
 
 
-HLT =0b1000000000000000  # Halt clock
-MI = 0b0100000000000000  # Memory address register in
-RI = 0b0010000000000000  # RAM data in
-RO = 0b0001000000000000  # RAM data out
-IO = 0b0000100000000000  # Instruction register out
-II = 0b0000010000000000  # Instruction register in
-AI = 0b0000001000000000  # A register in
-AO = 0b0000000100000000  # A register out
-EO = 0b0000000010000000  # ALU out
-SU = 0b0000000001000000  # ALU subtract
-BI = 0b0000000000100000  # B register in
-OI = 0b0000000000010000  # Output register in
-CE = 0b0000000000001000  # Program counter enable
-CO = 0b0000000000000100  # Program counter out
-J =  0b0000000000000010  # Jump (program counter in)
-FI = 0b0000000000000001  # Flags in
-
-FLAGS_Z0C0 = 0
-FLAGS_Z0C1 = 1
-FLAGS_Z1C0 = 2
-FLAGS_Z1C1 = 3
-
-JC  = 0b0111
-JZ  = 0b1000
+# 74LS138 controlled pins, driven by right EEPROM
+#                    CBA
+HLT = 0b0000000000000001  # Halt clock
+AO  = 0b0000000000000010  # A register out
+IO  = 0b0000000000000011  # Instruction register out
+RO  = 0b0000000000000100  # RAM data out
+CO  = 0b0000000000000101  # Program counter out
+EO  = 0b0000000000000110  # ALU out
+BO  = 0b0000000000000111  # B register out
 
 UCODE_TEMPLATE = np.array([
   [ MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 ],   # 0000 - NOP

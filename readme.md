@@ -84,3 +84,6 @@ control logic
 
 - `rom_control_original.bin` is the final control logic of the Ben Eater video
 series
+
+- `rom_controll.bin` is my modified control logic that multiplexes hlt and
+output pins to free up some control lines
