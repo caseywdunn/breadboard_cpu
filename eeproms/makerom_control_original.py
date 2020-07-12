@@ -88,14 +88,14 @@ UCODE_TEMPLATE = np.array([
 # A10    Ground
 
 # ZF = 0, CF = 0
-chunk = UCODE_TEMPLATE
+chunk = np.copy( UCODE_TEMPLATE )
 upper = bytearray(v_upper_byte(chunk).flatten().tolist())
 lower = bytearray(v_lower_byte(chunk).flatten().tolist())
 code[0:128] = upper
 code[128:256] = lower
 
 # ZF = 0, CF = 1
-chunk = UCODE_TEMPLATE
+chunk = np.copy( UCODE_TEMPLATE )
 chunk[7,2] =  IO|J
 upper = bytearray(v_upper_byte(chunk).flatten().tolist())
 lower = bytearray(v_lower_byte(chunk).flatten().tolist())
@@ -103,7 +103,7 @@ code[256:384] = upper
 code[384:512] = lower
 
 # ZF = 0, CF = 1
-chunk = UCODE_TEMPLATE
+chunk = np.copy( UCODE_TEMPLATE )
 chunk[8,2] =  IO|J
 upper = bytearray(v_upper_byte(chunk).flatten().tolist())
 lower = bytearray(v_lower_byte(chunk).flatten().tolist())
@@ -111,7 +111,7 @@ code[512:640] = upper
 code[640:768] = lower
 
 #  ZF = 1, CF = 1
-chunk = UCODE_TEMPLATE
+chunk = np.copy( UCODE_TEMPLATE )
 chunk[7,2] =  IO|J
 chunk[8,2] =  IO|J
 upper = bytearray(v_upper_byte(chunk).flatten().tolist())

@@ -97,39 +97,49 @@ UCODE_TEMPLATE = np.array([
 # A9     Zero flag
 # A10    Ground
 
+# Where . is undetermine :
+#
+# Chip select
+# 0x..00 - 0x..7f    upper
+# 0x..80 - 0x..ff    lower
+#
+#
+
+
+
 # ZF = 0, CF = 0
-chunk = UCODE_TEMPLATE
+chunk = np.copy( UCODE_TEMPLATE )
 chunk[9,2] =  IO|J
 upper = bytearray(v_upper_byte(chunk).flatten().tolist())
 lower = bytearray(v_lower_byte(chunk).flatten().tolist())
-code[0:128] = upper
-code[128:256] = lower
+code[0:128] = upper    # 0x0000 - 0x007f
+code[128:256] = lower  # 0x0080 - 0x00ff
 
 # ZF = 0, CF = 1
-chunk = UCODE_TEMPLATE
+chunk = np.copy( UCODE_TEMPLATE )
 chunk[7,2] =  IO|J
 chunk[9,2] =  IO|J
 upper = bytearray(v_upper_byte(chunk).flatten().tolist())
 lower = bytearray(v_lower_byte(chunk).flatten().tolist())
-code[256:384] = upper
-code[384:512] = lower
+code[256:384] = upper # 0x0100 - 0x017f
+code[384:512] = lower # 0x0180 - 0x01ff
 
 # ZF = 1, CF = 0
-chunk = UCODE_TEMPLATE
+chunk = np.copy( UCODE_TEMPLATE )
 chunk[8,2] =  IO|J
 upper = bytearray(v_upper_byte(chunk).flatten().tolist())
 lower = bytearray(v_lower_byte(chunk).flatten().tolist())
-code[512:640] = upper
-code[640:768] = lower
+code[512:640] = upper # 0x0200 - 0x027f
+code[640:768] = lower # 0x0280 - 0x02ff
 
 #  ZF = 1, CF = 1
-chunk = UCODE_TEMPLATE
+chunk = np.copy( UCODE_TEMPLATE )
 chunk[7,2] =  IO|J
 chunk[8,2] =  IO|J
 upper = bytearray(v_upper_byte(chunk).flatten().tolist())
 lower = bytearray(v_lower_byte(chunk).flatten().tolist())
-code[768:896] = upper
-code[896:1024] = lower
+code[768:896]  = upper # 0x0300 - 0x037f
+code[896:1024] = lower # 0x0380 - 0x03ff
 
 
 with open("rom_control_no138.bin", "wb") as out_file:

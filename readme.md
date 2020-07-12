@@ -1,5 +1,9 @@
 # 8 bit breadboard computer
 
+![bentium](bentium.gif)
+
+
+
 My build of Ben Eater's 8 bit breadboard computer. More on that project at:
 
 - Project description at https://eater.net/8bit
@@ -7,15 +11,18 @@ My build of Ben Eater's 8 bit breadboard computer. More on that project at:
 
 ## Changes and notes
 
-A few things I came across in my build:
+A few changes I made in my build:
 
 - The 220 ohm resistors on LEDs are required, or the LEDs pull the line voltage below what is recognized as a high.
 - The pulldown resistors on the bus needed to be 4.7k rather than 10k
 - The memory address register would spontaneously clear when numbers with a large number of highs, including in particular D2 and D3, was on the bus. After a bunch of poking around I determined that there was instability on the CLR line. Don't know if it was stray capacitance, a bum chip, or something else. I fixed it by using a 74LS08, with one leg of each gate held high to configure it as a buffer, to separately drive each board CLR is connected to. This successfully isolated noise on the CLR line.
+- Above didn't fully resolve register A clearing when it has a high count, adding a 100nF capacitor on that clear line reduced the problem
 - Subtracting one sometimes makes big jumps. Adding a 100nF capacitor on the SU line at the ALU greatly reduced but did not entirely stop the problem
 - The 4 bit dip-switch needed leads soldered on to fit in the breadboard
 - I generate the EEPROM binaries with python and write them with an EEPROM programmer rather
   than use an arduino
+- I wanted to be able to run it with the clock, halt at a specific point, and then step through code. To do this
+I added a halt bypass button with an OR gate. When it halts, I can switch it to step mode, press and hold the bypass, hit the step button once, release the bypass, and resume stepping through the code or turn the clock back on.
 
 
 ## Programs
@@ -85,5 +92,8 @@ control logic
 - `rom_control_original.bin` is the final control logic of the Ben Eater video
 series
 
-- `rom_controll.bin` is my modified control logic that multiplexes hlt and
-output pins to free up some control lines
+- `rom_control.bin` is my modified control logic that multiplexes hlt and
+output pins with a 74LS138 to free up some control lines
+
+- `rom_control_no138.bin` is a derivative of the above, but without multiplexing.
+Had some problems likely due to timing, so removed the 74LS138.
