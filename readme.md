@@ -1,6 +1,6 @@
 # 8 bit breadboard computer
 
-![bentium](bentium.gif)
+![bentium](bentium_fib.gif)
 
 
 
@@ -8,6 +8,7 @@ My build of Ben Eater's 8 bit breadboard computer. More on that project at:
 
 - Project description at https://eater.net/8bit
 - Code for burning EEPROMs at https://github.com/beneater/eeprom-programmer
+
 
 ## Changes and notes
 
