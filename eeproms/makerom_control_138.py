@@ -35,7 +35,7 @@ code = bytearray( [0x00] * rom_bytes )
 # D     7654321076543210
 
 # Left EEPROM
-EO  = 0b1000000000000000  # ALU out
+#   = 0b1000000000000000  # Unassigned
 FI  = 0b0100000000000000  # Flags in
 OI  = 0b0010000000000000  # Output register in
 MI  = 0b0001000000000000  # Memory address register in
@@ -47,27 +47,22 @@ AI  = 0b0000000100000000  # A register in
 # Right EEPROM
 
 # Right EEPROM
-CO  = 0b0000000010000000  # Program counter out
-RO  = 0b0000000001000000  # RAM data out
+#   = 0b1000000010000000  # Unassigned
+#   = 0b1000000001000000  # Unassigned
 SU  = 0b0000000000100000  # ALU subtract
 CE  = 0b0000000000010000  # Program counter enable
 J   = 0b0000000000001000  # Jump (program counter in)
-IO  = 0b0000000000000100  # Instruction register out
-AO  = 0b0000000000000010  # A register out
-HLT = 0b0000000000000001  # Halt clock
-
-
 
 
 # 74LS138 controlled pins, driven by right EEPROM
 #                    CBA
-# HLT = 0b0000000000000001  # Halt clock
-# AO  = 0b0000000000000010  # A register out
-# IO  = 0b0000000000000011  # Instruction register out
-# RO  = 0b0000000000000100  # RAM data out
-# CO  = 0b0000000000000101  # Program counter out
-# EO  = 0b0000000000000110  # ALU out
-# BO  = 0b0000000000000111  # B register out
+HLT = 0b0000000000000001  # Halt clock
+AO  = 0b0000000000000010  # A register out
+IO  = 0b0000000000000011  # Instruction register out
+RO  = 0b0000000000000100  # RAM data out
+CO  = 0b0000000000000101  # Program counter out
+EO  = 0b0000000000000110  # ALU out
+BO  = 0b0000000000000111  # B register out
 
 UCODE_TEMPLATE = np.array([
   [ MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 ],   # 0000 - NOP
@@ -79,11 +74,11 @@ UCODE_TEMPLATE = np.array([
   [ MI|CO,  RO|II|CE,  IO|J,   0,      0,           0, 0, 0 ],   # 0110 - JMP
   [ MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 ],   # 0111 - JC
   [ MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 ],   # 1000 - JZ
-  [ MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 ],   # 1001 - JNZ
+  [ MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 ],   # 1001
   [ MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 ],   # 1010
   [ MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 ],   # 1011
-  [ MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 ],   # 1100
-  [ MI|CO,  RO|II|CE,  IO|MI,  RO|BI,  SU|FI,       0, 0, 0 ],   # 1101 - CMP  does a subtraction, sets flags, and then throws away result
+  [ MI|CO,  RO|II|CE,  0,       0,      0,           0, 0, 0 ],   # 1100
+  [ MI|CO,  RO|II|CE,  0,      0,      0,           0, 0, 0 ],   # 1101
   [ MI|CO,  RO|II|CE,  AO|OI,  0,      0,           0, 0, 0 ],   # 1110 - OUT
   [ MI|CO,  RO|II|CE,  HLT,    0,      0,           0, 0, 0 ],   # 1111 - HLT
 ]);
@@ -97,40 +92,28 @@ UCODE_TEMPLATE = np.array([
 # A9     Zero flag
 # A10    Ground
 
-# Where . is undetermine :
-#
-# Chip select
-# 0x..00 - 0x..7f    upper
-# 0x..80 - 0x..ff    lower
-#
-#
-
-
-
 # ZF = 0, CF = 0
 chunk = np.copy( UCODE_TEMPLATE )
-chunk[9,2] =  IO|J
 upper = bytearray(v_upper_byte(chunk).flatten().tolist())
 lower = bytearray(v_lower_byte(chunk).flatten().tolist())
-code[0:128] = upper    # 0x0000 - 0x007f
-code[128:256] = lower  # 0x0080 - 0x00ff
+code[0:128] = upper
+code[128:256] = lower
 
 # ZF = 0, CF = 1
 chunk = np.copy( UCODE_TEMPLATE )
 chunk[7,2] =  IO|J
-chunk[9,2] =  IO|J
 upper = bytearray(v_upper_byte(chunk).flatten().tolist())
 lower = bytearray(v_lower_byte(chunk).flatten().tolist())
-code[256:384] = upper # 0x0100 - 0x017f
-code[384:512] = lower # 0x0180 - 0x01ff
+code[256:384] = upper
+code[384:512] = lower
 
-# ZF = 1, CF = 0
+# ZF = 0, CF = 1
 chunk = np.copy( UCODE_TEMPLATE )
 chunk[8,2] =  IO|J
 upper = bytearray(v_upper_byte(chunk).flatten().tolist())
 lower = bytearray(v_lower_byte(chunk).flatten().tolist())
-code[512:640] = upper # 0x0200 - 0x027f
-code[640:768] = lower # 0x0280 - 0x02ff
+code[512:640] = upper
+code[640:768] = lower
 
 #  ZF = 1, CF = 1
 chunk = np.copy( UCODE_TEMPLATE )
@@ -138,9 +121,9 @@ chunk[7,2] =  IO|J
 chunk[8,2] =  IO|J
 upper = bytearray(v_upper_byte(chunk).flatten().tolist())
 lower = bytearray(v_lower_byte(chunk).flatten().tolist())
-code[768:896]  = upper # 0x0300 - 0x037f
-code[896:1024] = lower # 0x0380 - 0x03ff
+code[768:896] = upper
+code[896:1024] = lower
 
 
-with open("rom_control_no138.bin", "wb") as out_file:
+with open("rom_control_138.bin", "wb") as out_file:
   out_file.write(code)
